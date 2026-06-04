@@ -1,0 +1,221 @@
+.search-source-panel {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 100%;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  user-select: none;
+  font-family: var(--font-display);
+}
+
+.search-panel-section-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  padding: 16px 16px 8px 16px;
+  display: block;
+}
+
+/* CONNECTORS BOX */
+.search-connectors-box {
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-sm);
+  margin: 0 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.connector-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+.connector-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connector-brand-icon {
+  color: var(--text-muted);
+}
+
+.connector-name {
+  font-size: 12px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.connection-green-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background-color: #3fa06b;
+  box-shadow: 0 0 6px 1px rgba(63, 160, 107, 0.4);
+}
+
+/* CSS TOGGLE SWITCH */
+.connector-toggle-switch {
+  width: 36px;
+  height: 20px;
+  background-color: var(--border-strong);
+  border-radius: 10px;
+  position: relative;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.toggle-switch-circle {
+  width: 16px;
+  height: 16px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease;
+  transform: translateX(0);
+}
+
+.connector-toggle-switch.active {
+  background-color: var(--accent);
+}
+
+.connector-toggle-switch.active .toggle-switch-circle {
+  transform: translateX(16px);
+  background-color: var(--bg-surface);
+}
+
+.search-panel-divider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: 16px 12px;
+}
+
+/* ADD SOURCE BUTTON */
+.search-add-source-btn {
+  width: calc(100% - 24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-sm);
+  margin: 0 12px 12px 12px;
+  padding: 10px;
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-add-source-btn:hover {
+  border-color: var(--border-strong);
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+}
+
+/* SOURCE LIST */
+.search-source-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 12px;
+  margin-bottom: 20px;
+}
+
+.search-source-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-primary);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-source-row:hover {
+  background-color: var(--bg-elevated);
+}
+
+.search-source-row.selected {
+  border-color: var(--accent-border);
+  background-color: var(--accent-muted);
+}
+
+/* CUSTOM CHECKBOX */
+.search-row-checkbox {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background-color: var(--bg-surface);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.search-row-checkbox.checked {
+  background-color: var(--accent);
+  border-color: var(--accent);
+}
+
+.search-row-checkbox.checked::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  width: 4px;
+  height: 6px;
+  border: solid var(--bg-primary);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.search-row-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.search-source-row.selected .search-row-icon {
+  color: var(--text-primary);
+}
+
+.source-icon {
+  display: block;
+}
+
+.search-row-name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-source-row.selected .search-row-name {
+  font-weight: 500;
+}
+
+.search-sources-empty {
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 16px;
+}

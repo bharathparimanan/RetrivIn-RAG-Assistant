@@ -1,0 +1,189 @@
+.topbar-container {
+  height: 64px;
+  min-height: 64px;
+  max-height: 64px;
+  width: 100%;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background-color: var(--bg-primary);
+  user-select: none;
+  z-index: 8;
+}
+
+/* LEFT BRAND SECTION */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.topbar-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-primary);
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+/* RIGHT DROPDOWN TRIGGER */
+.topbar-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.topbar-dropdown-trigger:hover {
+  border-color: var(--accent);
+  background-color: var(--bg-elevated);
+}
+
+.topbar-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 200px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 30;
+  animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.topbar-dropdown-item {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.topbar-dropdown-item:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.topbar-dropdown-item.active {
+  background-color: var(--accent-muted);
+  color: var(--text-primary);
+  border-left: 2px solid var(--accent);
+}
+
+/* SESSION VIEW ADJUSTMENTS */
+.session-mini-mode-row {
+  display: flex;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  gap: 2px;
+}
+
+.session-mini-mode-pill {
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.session-mini-mode-pill:hover {
+  color: var(--text-secondary);
+}
+
+.session-mini-mode-pill.active {
+  background-color: var(--accent-muted);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+}
+
+.topbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TIMER & COUNTER */
+.session-timer-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  padding: 5px 12px;
+}
+
+.session-timer-pulse {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background-color: var(--accent);
+  animation: pulsingDot 1.5s infinite alternate;
+}
+
+@keyframes pulsingDot {
+  0% {
+    opacity: 1;
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(1.1);
+    box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.session-timer-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.session-counter-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  font-weight: 500;
+  white-space: nowrap;
+}

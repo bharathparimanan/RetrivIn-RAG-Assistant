@@ -1,0 +1,192 @@
+.sidebar-container {
+  width: 220px;
+  min-width: 220px;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  user-select: none;
+  transition: width 0.25s ease, min-width 0.25s ease;
+  overflow: hidden;
+}
+
+.sidebar-brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+  padding-left: 6px;
+}
+
+.sidebar-hamburger {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sidebar-hamburger:hover {
+  color: var(--text-primary);
+}
+
+.sidebar-brand-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  line-height: 1;
+}
+
+.sidebar-nav-menu {
+  flex: 1;
+}
+
+.sidebar-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.sidebar-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.sidebar-nav-item:hover:not(.disabled) {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item:hover:not(.disabled) .sidebar-nav-icon {
+  color: var(--text-secondary);
+}
+
+.sidebar-nav-item.active {
+  background-color: var(--accent-muted);
+  border: 1px solid var(--accent-border);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item.active .sidebar-nav-icon {
+  color: var(--accent);
+}
+
+.sidebar-nav-item.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.sidebar-footer-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.sidebar-avatar {
+  width: 32px;
+  height: 32px;
+  background-color: var(--accent);
+  color: white;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.sidebar-user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-user-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.sidebar-account-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.sidebar-account-sub:hover {
+  color: var(--text-primary);
+}
+
+.sidebar-container.collapsed {
+  width: 56px;
+  min-width: 56px;
+  padding: 20px 8px; /* Slightly adjust padding for centering */
+}
+
+/* Hide labels and brand name when collapsed */
+.sidebar-container.collapsed .sidebar-nav-label,
+.sidebar-container.collapsed .sidebar-brand-name,
+.sidebar-container.collapsed .sidebar-user-details {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition: opacity 0.15s ease;
+}
+
+/* Keep icons visible and centered when collapsed */
+.sidebar-container.collapsed .sidebar-nav-item {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.sidebar-container.collapsed .sidebar-nav-icon {
+  margin: 0 auto;
+}
+
+/* Keep avatar visible when collapsed */
+.sidebar-container.collapsed .sidebar-footer-profile {
+  justify-content: center;
+}
+
+.sidebar-container.collapsed .sidebar-avatar {
+  margin: 0 auto;
+}
+
+/* Hamburger stays visible always */
+.sidebar-container.collapsed .sidebar-brand-wrapper {
+  justify-content: center;
+  padding-left: 0;
+}

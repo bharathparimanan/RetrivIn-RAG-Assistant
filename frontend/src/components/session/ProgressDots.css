@@ -1,0 +1,26 @@
+.progress-dots-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.progress-dot-item {
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.progress-dot-item.done {
+  background-color: var(--accent);
+}
+
+.progress-dot-item.current {
+  background-color: var(--accent-hover);
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.15);
+}
+
+.progress-dot-item.upcoming {
+  background-color: var(--border-subtle);
+}

@@ -1,0 +1,107 @@
+.landing-layout-wrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  overflow: hidden;
+}
+
+.landing-main-frame {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+}
+
+.landing-content-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 24px;
+  position: relative;
+}
+
+.landing-center-illustration {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.landing-logo-opacity-container {
+  opacity: 0.15;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-hero-heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.landing-hero-subtext {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+/* MODE SELECTION PILLS */
+.landing-mode-selector-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.landing-mode-pill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 8px 24px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  background: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 110px;
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+}
+
+.landing-mode-pill:hover:not(.active) {
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+}
+
+.landing-mode-pill.active {
+  background-color: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--bg-primary);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.08);
+}
+
+/* INPUT CONTAINER */
+.landing-input-panel {
+  width: 100%;
+  max-width: 760px;
+  margin-top: auto;
+}
+
+.landing-content-body.search-view-layout {
+  padding: 0;
+  justify-content: stretch;
+  align-items: stretch;
+}

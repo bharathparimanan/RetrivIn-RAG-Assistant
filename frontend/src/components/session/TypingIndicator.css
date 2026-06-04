@@ -1,0 +1,37 @@
+.typing-indicator-container {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.typing-indicator-card {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+}
+
+.typing-dot {
+  width: 5px;
+  height: 5px;
+  background-color: var(--border-strong);
+  border-radius: var(--radius-pill);
+  display: inline-block;
+  animation: typingBounce 1s infinite ease-in-out;
+}
+
+@keyframes typingBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+    background-color: var(--accent);
+  }
+}
