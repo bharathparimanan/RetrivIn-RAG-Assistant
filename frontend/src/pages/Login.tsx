@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RetrivinLogo from '../components/logo/RetrivinLogo';
+import { login, register } from '../lib/api';
 import './Login.css';
 
 export const Login: React.FC = () => {
@@ -10,6 +11,8 @@ export const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [shake, setShake] = useState(false);
   const [errorText, setErrorText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   useEffect(() => {
     // If token exists, direct to landing page
@@ -30,7 +33,7 @@ export const Login: React.FC = () => {
     setStep(2);
   };
 
-  const handlePasswordSubmit = (e?: React.FormEvent) => {
+  const handlePasswordSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setErrorText('');
 
@@ -40,9 +43,20 @@ export const Login: React.FC = () => {
       return;
     }
 
-    // Success Authentication
-    localStorage.setItem('retrivin_token', 'mock-token');
-    navigate('/');
+    setLoading(true);
+    try {
+      if (authMode === 'login') {
+        await login(email, password);
+      } else {
+        await register(email, password);
+      }
+      navigate('/');
+    } catch (err: any) {
+      setErrorText(err.message || 'Something went wrong');
+      triggerErrorShake();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const triggerErrorShake = () => {
@@ -85,7 +99,7 @@ export const Login: React.FC = () => {
                   autoComplete="email"
                   className="login-input-field"
                 />
-                <button type="submit" className="login-enter-btn" onClick={handleSubmit} aria-label="Submit">
+                <button type="submit" className="login-enter-btn" onClick={handleSubmit} aria-label="Submit" disabled={loading}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -121,7 +135,7 @@ export const Login: React.FC = () => {
                   autoFocus
                   className="login-input-field"
                 />
-                <button type="submit" className="login-enter-btn" onClick={handleSubmit} aria-label="Submit">
+                <button type="submit" className="login-enter-btn" onClick={handleSubmit} aria-label="Submit" disabled={loading}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22 2L11 13" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -139,6 +153,41 @@ export const Login: React.FC = () => {
         <div className="login-card-footer-row">
           <span>SSO coming soon</span>
         </div>
+        <p className="login-auth-toggle">
+          {authMode === 'login' ? (
+            <>
+              No account?{' '}
+              <button
+                type="button"
+                className="login-auth-toggle-btn"
+                onClick={() => {
+                  setAuthMode('register');
+                  setStep(1);
+                  setPassword('');
+                  setErrorText('');
+                }}
+              >
+                Create one
+              </button>
+            </>
+          ) : (
+            <>
+              Have an account?{' '}
+              <button
+                type="button"
+                className="login-auth-toggle-btn"
+                onClick={() => {
+                  setAuthMode('login');
+                  setStep(1);
+                  setPassword('');
+                  setErrorText('');
+                }}
+              >
+                Sign in
+              </button>
+            </>
+          )}
+        </p>
       </div>
     </div>
   );

@@ -1,26 +1,27 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { MOCK_QUESTIONS, MOCK_SCORE } from '../lib/mock-data';
 import type { SessionEntry, Question } from '../types/session';
 
 export function useSession() {
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [entries, setEntries] = useState<SessionEntry[]>([]);
   const [status, setStatus] = useState<'idle' | 'question' | 'answered' | 'scored' | 'complete'>('idle');
 
-  const currentQuestion: Question | null = MOCK_QUESTIONS[currentIndex] || null;
+  const currentQuestion: Question | null = questions[currentIndex] || null;
 
-  // Initialize session with the first question
-  useEffect(() => {
-    if (entries.length === 0 && MOCK_QUESTIONS.length > 0) {
-      setEntries([{ question: MOCK_QUESTIONS[0] }]);
-      setStatus('question');
-    }
-  }, [entries]);
+  // Load an external question set and start the session
+  const initSession = useCallback((qs: Question[]) => {
+    const source = qs.length > 0 ? qs : MOCK_QUESTIONS;
+    setQuestions(source);
+    setCurrentIndex(0);
+    setEntries([{ question: source[0] }]);
+    setStatus('question');
+  }, []);
 
   const submitAnswer = useCallback((text: string) => {
     if (status !== 'question' || !currentQuestion) return;
 
-    // 1. Set answered status and add answer to the active entry
     setStatus('answered');
     setEntries((prev) => {
       const copy = [...prev];
@@ -31,7 +32,6 @@ export function useSession() {
       return copy;
     });
 
-    // 2. After 400ms, attach score and set scored status
     setTimeout(() => {
       setStatus('scored');
       setEntries((prev) => {
@@ -43,14 +43,13 @@ export function useSession() {
         return copy;
       });
 
-      // 3. After 1200ms, advance to next question or complete
       setTimeout(() => {
         setCurrentIndex((prevIndex) => {
           const nextIndex = prevIndex + 1;
-          if (nextIndex < MOCK_QUESTIONS.length) {
+          if (nextIndex < questions.length) {
             setEntries((prevEntries) => [
               ...prevEntries,
-              { question: MOCK_QUESTIONS[nextIndex] }
+              { question: questions[nextIndex] }
             ]);
             setStatus('question');
           } else {
@@ -60,18 +59,17 @@ export function useSession() {
         });
       }, 1200);
     }, 400);
-  }, [status, currentQuestion]);
+  }, [status, currentQuestion, questions]);
 
   const skipQuestion = useCallback(() => {
     if (status !== 'question' || !currentQuestion) return;
 
-    // Skip advances index immediately, no answer, no score attached
     setCurrentIndex((prevIndex) => {
       const nextIndex = prevIndex + 1;
-      if (nextIndex < MOCK_QUESTIONS.length) {
+      if (nextIndex < questions.length) {
         setEntries((prevEntries) => [
           ...prevEntries,
-          { question: MOCK_QUESTIONS[nextIndex] }
+          { question: questions[nextIndex] }
         ]);
         setStatus('question');
       } else {
@@ -79,19 +77,21 @@ export function useSession() {
       }
       return nextIndex;
     });
-  }, [status, currentQuestion]);
+  }, [status, currentQuestion, questions]);
 
   const restartSession = useCallback(() => {
+    const source = questions.length > 0 ? questions : MOCK_QUESTIONS;
     setCurrentIndex(0);
-    setEntries([{ question: MOCK_QUESTIONS[0] }]);
+    setEntries([{ question: source[0] }]);
     setStatus('question');
-  }, []);
+  }, [questions]);
 
   return {
     entries,
     currentIndex,
     currentQuestion,
     status,
+    initSession,
     submitAnswer,
     skipQuestion,
     restartSession

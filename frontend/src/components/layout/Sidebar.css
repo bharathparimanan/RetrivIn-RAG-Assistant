@@ -190,3 +190,18 @@
   justify-content: center;
   padding-left: 0;
 }
+
+.sidebar-nav-subitem {
+  margin-left: 16px;
+  padding: 6px 10px;
+  border-left: 1px solid var(--border-subtle);
+  font-size: 11px;
+  color: var(--accent);
+  opacity: 0.85;
+}
+
+.sidebar-nav-subitem:hover {
+  background: var(--accent-muted);
+  border-left-color: var(--accent);
+  opacity: 1;
+}

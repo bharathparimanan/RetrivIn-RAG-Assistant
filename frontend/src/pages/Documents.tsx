@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
+import { listDocuments, uploadDocument, getDocumentStatus } from '../lib/api';
 import './Documents.css';
 
 interface IngestionDoc {
@@ -20,33 +21,8 @@ export const Documents: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Initial Documents Library state
-  const [documents, setDocuments] = useState<IngestionDoc[]>([
-    {
-      id: 'doc-1',
-      name: 'resume_v4.pdf',
-      type: 'Resume',
-      uploadedAt: '2 hours ago',
-      status: 'Indexed',
-      chunks: 64
-    },
-    {
-      id: 'doc-2',
-      name: 'senior_data_engineer_jd.pdf',
-      type: 'Job Description',
-      uploadedAt: '1 day ago',
-      status: 'Indexed',
-      chunks: 42
-    },
-    {
-      id: 'doc-3',
-      name: 'lakehouse_notes.pdf',
-      type: 'Notes',
-      uploadedAt: '3 minutes ago',
-      status: 'Indexed',
-      chunks: 58
-    }
-  ]);
+  const [documents, setDocuments] = useState<IngestionDoc[]>([]);
+  const pollingRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
 
   // Drag and drop states
   const [isDragOver, setIsDragOver] = useState(false);
@@ -65,12 +41,76 @@ export const Documents: React.FC = () => {
   // Selected document content previewer state (View Action)
   const [previewDoc, setPreviewDoc] = useState<IngestionDoc | null>(null);
 
-  // Authenticate user
+  // Authenticate user and load real documents
   useEffect(() => {
     if (!localStorage.getItem('retrivin_token')) {
       navigate('/login');
+      return;
     }
+    loadRealDocuments();
+    return () => {
+      Object.values(pollingRef.current).forEach(clearInterval);
+    };
   }, [navigate]);
+
+  const mapBackendStatus = (status: string): IngestionDoc['status'] => {
+    if (status === 'ready') return 'Indexed';
+    if (status === 'failed') return 'Failed';
+    return 'Processing';
+  };
+
+  const mapBackendType = (docType: string): IngestionDoc['type'] => {
+    if (docType === 'resume') return 'Resume';
+    if (docType === 'jd' || docType === 'job_description') return 'Job Description';
+    if (docType === 'notes') return 'Notes';
+    if (docType === 'certification') return 'Certification';
+    return 'Resume';
+  };
+
+  const loadRealDocuments = async () => {
+    try {
+      const docs = await listDocuments();
+      const mapped: IngestionDoc[] = docs.map(d => ({
+        id: d.document_id,
+        name: d.filename,
+        type: mapBackendType(d.doc_type),
+        uploadedAt: 'recently',
+        status: mapBackendStatus(d.status),
+        chunks: d.status === 'ready' ? '—' : '—',
+      }));
+      setDocuments(mapped);
+      // Start polling for any that are still processing
+      docs.forEach(d => {
+        if (d.status === 'uploaded' || d.status === 'processing') {
+          startStatusPolling(d.document_id);
+        }
+      });
+    } catch (err) {
+      console.error('Failed to load documents:', err);
+    }
+  };
+
+  const startStatusPolling = (documentId: string) => {
+    if (pollingRef.current[documentId]) return;
+    pollingRef.current[documentId] = setInterval(async () => {
+      try {
+        const result = await getDocumentStatus(documentId);
+        setDocuments(prev =>
+          prev.map(d =>
+            d.id === documentId
+              ? { ...d, status: mapBackendStatus(result.status) }
+              : d
+          )
+        );
+        if (result.status === 'ready' || result.status === 'failed') {
+          clearInterval(pollingRef.current[documentId]);
+          delete pollingRef.current[documentId];
+          setCurrentStage('idle');
+          setActiveDocName('');
+        }
+      } catch {}
+    }, 3000);
+  };
 
   // Handle Drag Over
   const handleDragOver = (e: React.DragEvent) => {
@@ -199,9 +239,40 @@ export const Documents: React.FC = () => {
   };
 
   const simulateIngestion = (files: FileList) => {
-    // Traverse file upload sequences sequentially or trigger the first one
     if (files.length > 0) {
-      simulateIngestionSingle(files[0].name);
+      handleRealUpload(files[0]);
+    }
+  };
+
+  const handleRealUpload = async (file: File) => {
+    if (!file.name.endsWith('.pdf')) {
+      // Non-PDF: run simulation only (backend rejects non-PDF)
+      simulateIngestionSingle(file.name);
+      return;
+    }
+
+    // Start visual pipeline animation
+    simulateIngestionSingle(file.name);
+
+    try {
+      const result = await uploadDocument(file);
+      // Update the simulated doc entry with the real document_id
+      setDocuments(prev =>
+        prev.map(d =>
+          d.name === file.name && d.status === 'Processing'
+            ? { ...d, id: result.document_id }
+            : d
+        )
+      );
+      // Start real status polling
+      startStatusPolling(result.document_id);
+    } catch (err: any) {
+      console.error('Upload failed:', err.message);
+      setDocuments(prev =>
+        prev.map(d =>
+          d.name === file.name ? { ...d, status: 'Failed' } : d
+        )
+      );
     }
   };
 

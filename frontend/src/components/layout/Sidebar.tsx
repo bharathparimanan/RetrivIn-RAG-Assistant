@@ -7,13 +7,15 @@ interface SidebarProps {
   activeView?: 'home' | 'search';
   onSearch?: () => void;
   onNewSession?: () => void;
+  mode?: string;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
+export const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
   activeView = 'home',
   onSearch,
-  onNewSession
+  onNewSession,
+  mode
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -145,14 +147,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
             }
 
             return (
-              <li 
-                key={index} 
-                className={`sidebar-nav-item ${isActive ? 'active' : ''} ${item.disabled ? 'disabled' : ''}`}
-                onClick={() => handleNavClick(item.path, item.disabled, item.label)}
-              >
-                <div className="sidebar-nav-icon">{item.icon}</div>
-                <span className="sidebar-nav-label">{item.label}</span>
-              </li>
+              <React.Fragment key={index}>
+                <li
+                  className={`sidebar-nav-item ${isActive ? 'active' : ''} ${item.disabled ? 'disabled' : ''}`}
+                  onClick={() => handleNavClick(item.path, item.disabled, item.label)}
+                >
+                  <div className="sidebar-nav-icon">{item.icon}</div>
+                  <span className="sidebar-nav-label">{item.label}</span>
+                </li>
+                {/* Schedule Task — only in Prepare mode */}
+                {item.label === 'Notes' && mode === 'introspect' && location.pathname === '/session' && (
+                  <li
+                    className="sidebar-nav-item sidebar-nav-subitem"
+                    onClick={() => navigate('/notes/schedule')}
+                  >
+                    <div className="sidebar-nav-icon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="1.5">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" strokeLinecap="round"/>
+                      </svg>
+                    </div>
+                    <span className="sidebar-nav-label">Schedule Task</span>
+                  </li>
+                )}
+              </React.Fragment>
             );
           })}
         </ul>

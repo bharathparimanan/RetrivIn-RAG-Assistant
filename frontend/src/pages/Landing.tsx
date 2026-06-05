@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { createSession } from '../lib/api';
+import DocumentSelectorModal from '../components/session/DocumentSelectorModal';
 import Sidebar from '../components/layout/Sidebar';
 import Topbar from '../components/layout/Topbar';
 import InputBar from '../components/layout/InputBar';
@@ -14,6 +16,9 @@ export const Landing: React.FC = () => {
   const [mode, setMode] = useState<Mode>('trainer');
   const [inputValue, setInputValue] = useState('');
   const [view, setView] = useState<'home' | 'search'>('home');
+  const [sending, setSending] = useState(false);
+  const [showDocModal, setShowDocModal] = useState(false);
+  const [targetRole, setTargetRole] = useState('');
 
   // Authenticate user
   useEffect(() => {
@@ -30,13 +35,22 @@ export const Landing: React.FC = () => {
   }, [location.state]);
 
   const handleSend = () => {
-    // Save current configuration
-    sessionStorage.setItem('retrivin_session_mode', mode);
-    if (inputValue.trim()) {
-      sessionStorage.setItem('retrivin_start_topic', inputValue.trim());
+    if (!inputValue.trim()) return;
+    setTargetRole(inputValue.trim());
+    setShowDocModal(true);
+  };
+
+  const handleSessionStart = async (selectedDocIds: string[]) => {
+    setShowDocModal(false);
+    setSending(true);
+    try {
+      const session = await createSession(mode, targetRole, selectedDocIds);
+      navigate(`/session?id=${session.session_id}`);
+    } catch (err: any) {
+      console.error('Failed to create session:', err.message);
+    } finally {
+      setSending(false);
     }
-    setInputValue('');
-    navigate('/session');
   };
 
   const getModeLabel = (activeMode: Mode) => {
@@ -51,10 +65,11 @@ export const Landing: React.FC = () => {
   return (
     <div className="landing-layout-wrapper">
       {/* Sidebar navigation */}
-      <Sidebar 
+      <Sidebar
         activeView={view}
         onSearch={() => setView('search')}
         onNewSession={() => setView('home')}
+        mode={mode}
       />
 
       {/* Main content frame */}
@@ -103,18 +118,27 @@ export const Landing: React.FC = () => {
               </div>
 
               <div className="landing-input-panel">
-                <InputBar 
+                <InputBar
                   value={inputValue}
                   onChange={setInputValue}
                   onSend={handleSend}
-                  placeholder="Start your session..."
+                  placeholder="Enter target role e.g. Senior Data Engineer..."
                   modeLabel={`${getModeLabel(mode)} Mode`}
+                  disabled={sending}
                 />
               </div>
             </>
           )}
         </div>
       </div>
+      {showDocModal && (
+        <DocumentSelectorModal
+          mode={mode}
+          targetRole={targetRole}
+          onConfirm={handleSessionStart}
+          onClose={() => setShowDocModal(false)}
+        />
+      )}
     </div>
   );
 };

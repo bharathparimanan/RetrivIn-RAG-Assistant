@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Landing from './pages/Landing';
 import Session from './pages/Session';
 import Documents from './pages/Documents';
+import Reports from './pages/Reports';
 import './styles/tokens.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<Landing />} />
         <Route path="/session" element={<Session />} />
         <Route path="/documents" element={<Documents />} />
+        <Route path="/reports/:sessionId" element={<Reports />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
